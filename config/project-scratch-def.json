@@ -1,0 +1,19 @@
+{
+  "edition": "Enterprise",
+  "features": [
+    "API",
+    "AuthorApex",
+    "ServiceCloud",
+    "LightningServiceConsole",
+    "LiveAgent",
+    "DebugApex"
+  ],
+  "orgPreferences": {
+    "enabled": [
+      "ChatterEnabled",
+      "EventLogWaveIntegEnabled",
+      "IsLiveAgentEnabled"
+    ],
+    "disabled": []
+  }
+}

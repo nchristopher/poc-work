@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <choices>
+        <name>PayG</name>
+        <choiceText>PayG</choiceText>
+        <dataType>Boolean</dataType>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </choices>
+    <choices>
+        <name>PayMonthly</name>
+        <choiceText>Pay Monthly</choiceText>
+        <dataType>Boolean</dataType>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </choices>
+    <dynamicChoiceSets>
+        <name>CallReason</name>
+        <dataType>Picklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>Reason</picklistField>
+        <picklistObject>Case</picklistObject>
+    </dynamicChoiceSets>
+    <interviewLabel>Call Reason {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Call Reason</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Customer</name>
+        <label>Get Customer</label>
+        <locationX>396</locationX>
+        <locationY>150</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Call_Reason</targetReference>
+        </connector>
+        <filters>
+            <field>Phone</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Customer_MPN</elementReference>
+            </value>
+        </filters>
+        <object>Account</object>
+        <outputReference>CustomerRecord</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>BillingAddress</queriedFields>
+    </recordLookups>
+    <screens>
+        <name>Call_Reason</name>
+        <label>Call Reason</label>
+        <locationX>395</locationX>
+        <locationY>318</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>CustomerName</name>
+            <fieldText>Caller Name - {!CustomerRecord.Name}</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>CustomerType</name>
+            <choiceReferences>PayMonthly</choiceReferences>
+            <choiceReferences>PayG</choiceReferences>
+            <dataType>Boolean</dataType>
+            <fieldText>Customer Type</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>Reason_For_Call</name>
+            <choiceReferences>CallReason</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Reason For Call</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <description>Launches the Case Creation and DPA check process</description>
+        <name>Care_Launcher</name>
+        <label>Care Launcher</label>
+        <locationX>234</locationX>
+        <locationY>50</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Get_Customer</targetReference>
+        </connector>
+        <fields>
+            <name>Customer_MPN</name>
+            <dataType>String</dataType>
+            <fieldText>Customer MPN</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+            <validationRule>
+                <errorMessage>{!InvalidInputMPN}</errorMessage>
+                <formulaExpression>isNumber({!Customer_MPN})</formulaExpression>
+            </validationRule>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <startElementReference>Care_Launcher</startElementReference>
+    <status>Draft</status>
+    <textTemplates>
+        <description>MPN Not a number</description>
+        <name>InvalidInputMPN</name>
+        <text>Invalid Input - MPN should be a Number</text>
+    </textTemplates>
+    <variables>
+        <name>CustomerRecord</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <objectType>Account</objectType>
+    </variables>
+    <variables>
+        <description>Customer MPN Number</description>
+        <name>MPNNumber</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <scale>0</scale>
+    </variables>
+</Flow>
